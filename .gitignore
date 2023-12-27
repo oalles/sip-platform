@@ -1,0 +1,4 @@
+.idea/
+environment/data/dump.rdb
+environment/data/appendonlydir/
+redis-functions/node_modules

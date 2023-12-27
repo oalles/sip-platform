@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  kamailio:
+    image: kamailio/kamailio-ci:latest
+    restart: always
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "7000:7000/udp"
+      - "7000:7000/tcp"
+    environment:
+      - DBENGINE=REDIS
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DBNAME=0
+    volumes:
+      - ./config_files:/etc/kamailio/
+    depends_on:
+      - redis
+  redis:
+    image: 'redis/redis-stack-server:edge'
+    ports:
+      - '6379:6379'
+    volumes:
+      - ~/.redisData:/data
+    environment:
+      - REDIS_ARGS=--appendonly yes --appendfilename appendonly.aof --appendfsync always --loglevel verbose --notify-keyspace-events AKE
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
